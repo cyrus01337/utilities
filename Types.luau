@@ -1,20 +1,20 @@
-export type Table<V = any, K = any> = { [K]: V }
-export type Record<K = string, V = any> = Table<V, K>
-export type Array<V = any> = Table<V, number>
+export type Table<Value = any, Key = any> = { [Key]: Value }
+export type Record<Key = string, Value = any> = Table<Value, Key>
+export type Array<Value = any> = Table<Value, number>
 
 local TableLiteral: Table = {}
 local RecordLiteral: Record = {}
 local ArrayLiteral: Array = {}
 local Types = {
-    Number = 0,
-    String = "",
-    Table = TableLiteral,
-    Record = RecordLiteral,
-    Array = ArrayLiteral,
+	Number = 0,
+	String = "",
+	Table = TableLiteral,
+	Record = RecordLiteral,
+	Array = ArrayLiteral,
 }
 
 function Types.unsafeForceCast<To, From>(value: From): To
-    return (value :: any) :: To
+	return (value :: any) :: To
 end
 
 return Types
