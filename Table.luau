@@ -198,4 +198,8 @@ function Table.createWeakTable<WeakTableType>(mode: ("k" | "v" | "kv")?): WeakTa
     return weakTable
 end
 
+function Table.removeFromArray<Value>(container: Types.Array<Value>, value: Value): ()
+    table.remove(container, table.find(container, value))
+end
+
 return Table
