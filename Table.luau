@@ -199,7 +199,13 @@ function Table.createWeakTable<WeakTableType>(mode: ("k" | "v" | "kv")?): WeakTa
 end
 
 function Table.removeFromArray<Value>(container: Types.Array<Value>, value: Value): ()
-    table.remove(container, table.find(container, value))
+    local indexFound = table.find(container, value)
+
+    if not indexFound then
+        return
+    end
+
+    table.remove(container, indexFound)
 end
 
 return Table
