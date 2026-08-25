@@ -1,6 +1,7 @@
 export type Table<Value = any, Key = any> = { [Key]: Value }
 export type Record<Key = string, Value = any> = Table<Value, Key>
 export type Array<Value = any> = Table<Value, number>
+export type WeakTable<Key = any, Value = any> = typeof(setmetatable({} :: Record<Key, Value>, { __mode = "k" }))
 
 local TableLiteral: Table = {}
 local RecordLiteral: Record = {}
