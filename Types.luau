@@ -1,7 +1,7 @@
 export type Table<Value = any, Key = any> = { [Key]: Value }
 export type Record<Key = string, Value = any> = Table<Value, Key>
 export type Array<Value = any> = Table<Value, number>
-export type WeakTable<Key = any, Value = any, Mode = "k" | "v" | "kv"> = Table<Value, Key> & { __mode: Mode }
+export type WeakTable<Key = any, Value = any, Mode = "k" | "v" | "kv"> = Table<Value, Key>
 local TableLiteral: Table = {}
 local RecordLiteral: Record = {}
 local ArrayLiteral: Array = {}
