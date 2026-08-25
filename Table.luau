@@ -191,8 +191,11 @@ function Table.defaults<To, From>(properties: From & Types.Table, defaults: To &
     return filled
 end
 
-function Table.createWeakTable(mode: ("k" | "v" | "kv")?): Types.Table
-    return setmetatable({}, { __mode = if mode == nil then "k" else mode })
+function Table.createWeakTable<WeakTableType>(mode: ("k" | "v" | "kv")?): WeakTableType
+    local weakTable: WeakTableType =
+        Types.unsafeForceCast(setmetatable({}, { __mode = if mode == nil then "k" else mode }))
+
+    return weakTable
 end
 
 return Table
