@@ -208,4 +208,14 @@ function Table.removeFromArray<Value>(container: Types.Array<Value>, value: Valu
     table.remove(container, indexFound)
 end
 
+function Table.extend<To, From>(to: Types.Array<To>, ...: Types.Array<From>): Types.Array<To | From>
+    for _, container in { ... } do
+        for _, value in container do
+            table.insert(to, value)
+        end
+    end
+
+    return to :: Types.Array<To | From>
+end
+
 return Table
