@@ -342,4 +342,25 @@ function Utils.runInStudio<ReturnType>(callback: () -> ReturnType): ReturnType?
     return if RunService:IsStudio() then callback() else nil
 end
 
+function Utils.retry<ReturnType, Arguments...>(
+    times: number,
+    delay: number,
+    callback: (Arguments...) -> ReturnType?,
+    ...: Arguments...
+): ReturnType?
+    for attempt = 1, times do
+        local success, result = pcall(callback, ...)
+
+        if not success then
+            task.wait(delay)
+
+            continue
+        end
+
+        return result
+    end
+
+    return nil
+end
+
 return Utils
