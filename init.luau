@@ -9,13 +9,16 @@ local Context = require(script.Context)
 local Table = require(script.Table)
 local Types = require(script.Types)
 
-local Utils = {
+local Utilities = {
     Context = Context,
     Table = Table,
 }
 
-function Utils.map<K, V, R>(iterable: Types.Table<V, K>, callback: (V, K, Types.Table<V, K>) -> R): Types.Array<R>
-    local mapped: Types.Array<R> = {}
+function Utilities.map<Key, Value, Returns>(
+    iterable: Types.Table<Value, Key>,
+    callback: (Value, Key, Types.Table<Value, Key>) -> Returns
+): Types.Array<Returns>
+    local mapped: Types.Array<Returns> = {}
 
     for key, value in iterable do
         local result = callback(value, key, iterable)
@@ -26,14 +29,14 @@ function Utils.map<K, V, R>(iterable: Types.Table<V, K>, callback: (V, K, Types.
     return mapped
 end
 
-function Utils.to(text: string, amount: number): string
+function Utilities.to(text: string, amount: number): string
     -- formatting the string prior to concatenation propagates a syntax error
     local pattern = "%." .. tostring(amount) .. "s"
 
     return string.format(pattern, text)
 end
 
-function Utils.capitalise(text: string): string
+function Utilities.capitalise(text: string): string
     local head = string.upper(text:sub(1, 1))
     local tail = text:sub(2)
 
@@ -42,9 +45,9 @@ end
 
 -- alias only to capitalise on lazy americans loving their shorthands and
 -- convert them into appreciating obvious acts of communism /j
-Utils.capitalize = Utils.capitalise
+Utilities.capitalize = Utilities.capitalise
 
-function Utils.timeit(callback: () -> any, iterations: number?)
+function Utilities.timeit(callback: () -> any, iterations: number?)
     assert(iterations > 0, "Iterations must be greater than 0")
 
     local min, max, message
@@ -66,7 +69,7 @@ function Utils.timeit(callback: () -> any, iterations: number?)
     local achievable = 1 / avg
 
     if achievable < 10 then
-        achievable = Utils.round(achievable, 3)
+        achievable = Utilities.round(achievable, 3)
     end
 
     message = (
@@ -80,13 +83,13 @@ function Utils.timeit(callback: () -> any, iterations: number?)
     warn(message:format(baseIterations, min, max, avg, tostring(achievable)))
 end
 
-function Utils.strip(text: string): string
+function Utilities.strip(text: string): string
     text = tostring(text)
 
     return text:match(Constants.STRIP_PATTERN) or text
 end
 
-function Utils.parent(object: Instance, iterations: number): Instance?
+function Utilities.parent(object: Instance, iterations: number): Instance?
     -- suppresses and special-cases nil.Parent errors by returning nil
     local success, result = pcall(function()
         for _ = 1, iterations do
@@ -99,7 +102,7 @@ function Utils.parent(object: Instance, iterations: number): Instance?
     return if success then result else nil
 end
 
-function Utils.isIn(value: any, iterable: Types.Table): any?
+function Utilities.isIn(value: any, iterable: Types.Table): any?
     for _, element in iterable do
         if element == value then
             return true
@@ -109,7 +112,7 @@ function Utils.isIn(value: any, iterable: Types.Table): any?
     return false
 end
 
-function Utils.isOneOf(instance: Instance, ...: string): boolean
+function Utilities.isOneOf(instance: Instance, ...: string): boolean
     for _, className in { ... } do
         if instance:IsA(className) then
             return true
@@ -119,7 +122,7 @@ function Utils.isOneOf(instance: Instance, ...: string): boolean
     return false
 end
 
-function Utils.abbreviate(number: number, decimalPlaces: number?, limit: number?): string
+function Utilities.abbreviate(number: number, decimalPlaces: number?, limit: number?): string
     local realDecimalPlaces = decimalPlaces or 0
     local realLimit = limit or 999
 
@@ -146,7 +149,7 @@ function Utils.abbreviate(number: number, decimalPlaces: number?, limit: number?
     return tostring(number)
 end
 
-function Utils.waitForDescendant(parent: Instance, name: string): Instance
+function Utilities.waitForDescendant(parent: Instance, name: string): Instance
     local descendantsToReview: Types.Array<Instance> = {}
 
     while true do
@@ -177,7 +180,7 @@ type DebounceProperties<ReturnType> = {
     Returning: ReturnType?,
 }
 
-function Utils.debounce<ReturnType>(
+function Utilities.debounce<ReturnType>(
     callback: (...any) -> ReturnType,
     properties: DebounceProperties<ReturnType>?
 ): (...any) -> ReturnType?
@@ -211,7 +214,7 @@ function Utils.debounce<ReturnType>(
     end
 end
 
-function Utils.debounceTable<ReturnType>(
+function Utilities.debounceTable<ReturnType>(
     callback: (...any) -> ReturnType,
     properties: DebounceProperties<ReturnType>?
 ): (...any) -> ReturnType?
@@ -257,7 +260,7 @@ function Utils.debounceTable<ReturnType>(
     end
 end
 
-function Utils.findPlayerFromAncestor(instance: Instance, recursive: boolean?): Player?
+function Utilities.findPlayerFromAncestor(instance: Instance, recursive: boolean?): Player?
     local isRecursive = recursive or false
     local modelFound: Instance?
 
@@ -282,7 +285,7 @@ function Utils.findPlayerFromAncestor(instance: Instance, recursive: boolean?): 
     return nil
 end
 
-function Utils.playTweenAwait(tween: Tween | Instance, tweenInfo: TweenInfo, properties: Types.Record)
+function Utilities.playTweenAwait(tween: Tween | Instance, tweenInfo: TweenInfo, properties: Types.Record)
     local tweenToPlay: Tween = if tween:IsA("Tween") then tween else TweenService:Create(tween, tweenInfo, properties)
 
     tweenToPlay:Play()
@@ -295,7 +298,7 @@ function Utils.playTweenAwait(tween: Tween | Instance, tweenInfo: TweenInfo, pro
     end
 end
 
-function Utils.resolvePath(path: string): Instance?
+function Utilities.resolvePath(path: string): Instance?
     if path == nil then
         return nil
     elseif path:lower() == "game" then
@@ -317,14 +320,14 @@ function Utils.resolvePath(path: string): Instance?
     return instance
 end
 
-function Utils.round(number: number, places: number): number
+function Utilities.round(number: number, places: number): number
     places = places or 0
     local power = 10 ^ places
 
     return math.floor(number * power) / power
 end
 
-function Utils.requireAll(...: ModuleScript): ...Types.Table
+function Utilities.requireAll(...: ModuleScript): ...Types.Table
     local modules = {}
 
     for _, path in { ... } do
@@ -338,11 +341,11 @@ function Utils.requireAll(...: ModuleScript): ...Types.Table
     return table.unpack(modules)
 end
 
-function Utils.runInStudio<ReturnType>(callback: () -> ReturnType): ReturnType?
+function Utilities.runInStudio<ReturnType>(callback: () -> ReturnType): ReturnType?
     return if RunService:IsStudio() then callback() else nil
 end
 
-function Utils.retry<ReturnType, Arguments...>(
+function Utilities.retry<ReturnType, Arguments...>(
     times: number,
     delay: number,
     callback: (Arguments...) -> ReturnType?,
@@ -363,4 +366,4 @@ function Utils.retry<ReturnType, Arguments...>(
     return nil
 end
 
-return Utils
+return Utilities
