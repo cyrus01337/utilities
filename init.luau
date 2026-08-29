@@ -11,6 +11,7 @@ local Table = require(script.Table)
 local Types = require(script.Types)
 
 local Utilities = {
+    Constants = Constants,
     Context = Context,
     Logger = Logger,
     Table = Table,
