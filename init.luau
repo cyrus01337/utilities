@@ -6,11 +6,13 @@ local TweenService = game:GetService("TweenService")
 
 local Constants = require(script.Constants)
 local Context = require(script.Context)
+local Logger = require(script.Logger)
 local Table = require(script.Table)
 local Types = require(script.Types)
 
 local Utilities = {
     Context = Context,
+    Logger = Logger,
     Table = Table,
 }
 
