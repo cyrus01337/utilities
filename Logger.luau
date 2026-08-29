@@ -1,29 +1,44 @@
+local DISABLED = false
+local DELIMITER = " "
 local Logger = {}
 
 type Logger = {
-    error: (string) -> (),
-    log: (string) -> (),
-    warn: (string) -> (),
+    error: (...any) -> (),
+    log: (...any) -> (),
+    print: (...any) -> (),
+    warn: (...any) -> (),
 }
 
-local function addScriptPrefixTo(message: string, baseScript: BaseScript): string
-    return `[{baseScript.Name}] {message}`
+local function convertToString(...: any): string
+    local converted = ""
+    local values = { ... }
+
+    for index, value in values do
+        converted ..= `{value}{DELIMITER}`
+    end
+
+    return converted:sub(0, #converted - #DELIMITER)
 end
 
 function Logger.new(baseScript: BaseScript): Logger
     local self = {}
+    local methods = {
+        error = error,
+        log = print,
+        warn = warn,
+    }
 
-    function self.error(message: string): ()
-        error(addScriptPrefixTo(message, baseScript))
+    for name, callback in methods do
+        self[name] = function(...)
+            if DISABLED then
+                return
+            end
+
+            callback(`[{baseScript.Name}] {convertToString(...)}`)
+        end
     end
 
-    function self.log(message: string): ()
-        error(addScriptPrefixTo(message, baseScript))
-    end
-
-    function self.warn(message: string): ()
-        error(addScriptPrefixTo(message, baseScript))
-    end
+    self.print = self.log
 
     return self
 end
